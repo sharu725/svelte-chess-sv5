@@ -1,4 +1,6 @@
 <script lang="ts" context="module">
+	import { mount, unmount } from "svelte";
+
 	export type GameOverEvent = CustomEvent<GameOver>;
 	export type MoveEvent = CustomEvent<Move>;
 	export type UciEvent = CustomEvent<string>;
@@ -96,21 +98,21 @@
 		isGameOver = api.isGameOver();
 	}
 
-	function promotionCallback( square: Square ): Promise<PieceSymbol> {
-		return new Promise((resolve) => {
-			const element = new PromotionDialog({
-				target: container,
-				props: { 
-					square,
-					orientation,
-					callback: (piece: PieceSymbol) => {
-						element.$destroy();
-						resolve( piece );
-					}
-				},
-			});
-		});
-	}
+  function promotionCallback(square: Square): Promise<PieceSymbol> {
+    return new Promise((resolve) => {
+      const element = mount(PromotionDialog, {
+        target: container,
+        props: {
+          square,
+          orientation,
+          callback: (piece: PieceSymbol) => {
+            unmount(element);
+            resolve(piece);
+          },
+        },
+      });
+    });
+  }
 
 	function moveCallback( move: Move ) {
 		dispatch( 'move', move );
