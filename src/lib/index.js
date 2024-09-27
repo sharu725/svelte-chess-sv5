@@ -1,1 +1,2 @@
-export { default as Chess } from './Chess.svelte'
+import Chess from "./Chess.svelte"
+export default Chess
